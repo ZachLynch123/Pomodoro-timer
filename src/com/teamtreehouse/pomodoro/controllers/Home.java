@@ -2,14 +2,17 @@ package com.teamtreehouse.pomodoro.controllers;
 
 import com.teamtreehouse.pomodoro.model.Attempt;
 import com.teamtreehouse.pomodoro.model.AttemptKind;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
-import java.awt.*;
 
 public class Home {
     @FXML
@@ -19,6 +22,7 @@ public class Home {
 
     private Attempt mCurrentAttempt;
     private StringProperty mTimerText;
+    private Timeline mTimeLine;
 
     public Home(){
         mTimerText = new SimpleStringProperty();
@@ -44,13 +48,33 @@ public class Home {
     }
 
     private void prepareAttempt(AttemptKind kind){
-        clearAttemptStyles();
+        reset();
         mCurrentAttempt = new Attempt("", kind);
         addAttemtpStyle(kind);
         title.setText(kind.getDisplayName());
         setTimerText(mCurrentAttempt.getmRemaningSeconds());
+        mTimeLine = new Timeline();
+        mTimeLine.setCycleCount(kind.getTotalSeconds());
+        mTimeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), e -> {
+            mCurrentAttempt.tick();
+            setTimerText(mCurrentAttempt.getmRemaningSeconds());
+        }));
     }
 
+    private void reset() {
+        clearAttemptStyles();
+        if (mTimeLine !=null && mTimeLine.getStatus() == Animation.Status.RUNNING){
+            mTimeLine.stop();
+        }
+    }
+
+
+    public void playTimer(){
+        mTimeLine.play();
+    }
+    public void pauseTimer(){
+        mTimeLine.pause();
+    }
     private void addAttemtpStyle(AttemptKind kind) {
         container.getStyleClass().add(kind.toString().toLowerCase());
     }
@@ -64,5 +88,10 @@ public class Home {
 
     public void DEBUG(ActionEvent actionEvent) {
         System.out.println("Hey Zach!");
+    }
+
+    public void handleRestart(ActionEvent actionEvent) {
+        prepareAttempt(AttemptKind.FOCUS);
+        playTimer();
     }
 }
