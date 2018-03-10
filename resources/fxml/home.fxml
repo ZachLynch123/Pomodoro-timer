@@ -11,7 +11,7 @@
       fx:controller="com.teamtreehouse.pomodoro.controllers.Home"
       fx:id="container">
     <children>
-
+        <Button fx:id="DEBUG" onAction="#DEBUG">DEBUG</Button>
         <Label fx:id="title" text="Pomodoro"/>
 
         <Label fx:id="time" text="00:00"/>
