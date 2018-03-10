@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.animation.Timeline;
@@ -19,6 +20,8 @@ public class Home {
     private VBox container;
     @FXML
     private Label title;
+    @FXML
+    private TextArea message;
 
     private Attempt mCurrentAttempt;
     private StringProperty mTimerText;
@@ -59,6 +62,16 @@ public class Home {
             mCurrentAttempt.tick();
             setTimerText(mCurrentAttempt.getmRemaningSeconds());
         }));
+        mTimeLine.setOnFinished(e -> {
+            saveCurrentAttempt();
+            prepareAttempt(mCurrentAttempt.getmKind() == AttemptKind.FOCUS ?
+                            AttemptKind.BREAK : AttemptKind.FOCUS);
+        });
+    }
+
+    private void saveCurrentAttempt() {
+        mCurrentAttempt.setmMessage(message.getText());
+        mCurrentAttempt.save();
     }
 
     private void reset() {
