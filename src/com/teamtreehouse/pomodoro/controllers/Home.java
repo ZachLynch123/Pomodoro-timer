@@ -20,20 +20,27 @@ public class Home {
     private Attempt mCurrentAttempt;
     private StringProperty mTimerText;
 
-    private Home(){
+    public Home(){
         mTimerText = new SimpleStringProperty();
+        setTimerText(0);
     }
 
     public String getTimerText() {
         return mTimerText.get();
     }
 
-    public StringProperty mTimerTextProperty() {
+    public StringProperty timerTextProperty() {
         return mTimerText;
     }
 
-    public void setmTimerText(String timerText) {
+    public void setTimerText(String timerText) {
         mTimerText.set(timerText);
+    }
+
+    public void setTimerText(int reaminingSeconds){
+        int minutes = reaminingSeconds / 60;
+        int seconds = reaminingSeconds % 60;
+        setTimerText(String.format("%02d:%02d", minutes,seconds));
     }
 
     private void prepareAttempt(AttemptKind kind){
@@ -41,6 +48,7 @@ public class Home {
         mCurrentAttempt = new Attempt("", kind);
         addAttemtpStyle(kind);
         title.setText(kind.getDisplayName());
+        setTimerText(mCurrentAttempt.getmRemaningSeconds());
     }
 
     private void addAttemtpStyle(AttemptKind kind) {
