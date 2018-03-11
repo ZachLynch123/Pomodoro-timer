@@ -70,7 +70,7 @@ public class Home {
             mApplause.play();
             prepareAttempt(mCurrentAttempt.getmKind() == AttemptKind.FOCUS ?
                             AttemptKind.BREAK : AttemptKind.FOCUS);
-        });
+        pauseTimer();});
     }
 
     private void saveCurrentAttempt() {
@@ -82,14 +82,19 @@ public class Home {
         clearAttemptStyles();
         if (mTimeLine !=null && mTimeLine.getStatus() == Animation.Status.RUNNING){
             mTimeLine.stop();
+
         }
     }
 
 
     public void playTimer(){
-        mTimeLine.play();
+        if (mTimeLine != null) {
+            container.getStyleClass().add("playing");
+            mTimeLine.play();
+        }
     }
     public void pauseTimer(){
+        container.getStyleClass().remove("playing");
         mTimeLine.pause();
     }
     private void addAttemtpStyle(AttemptKind kind) {
@@ -101,6 +106,7 @@ public class Home {
             container.getStyleClass().remove(kind.toString().toLowerCase());
         }
 
+
     }
 
     public void DEBUG(ActionEvent actionEvent) {
@@ -110,5 +116,13 @@ public class Home {
     public void handleRestart(ActionEvent actionEvent) {
         prepareAttempt(AttemptKind.FOCUS);
         playTimer();
+    }
+
+    public void handlePlay(ActionEvent actionEvent) {
+        playTimer();
+    }
+
+    public void handlePause(ActionEvent actionEvent) {
+        pauseTimer();
     }
 }
